@@ -4,23 +4,28 @@ services:
             context: ./build/nginx
             dockerfile: Dockerfile
         volumes:
-            - ./app/:/var/www/app/
+            - ./app/:/var/www/app/:delegated
         ports:
             - "80:80"
         networks:
             - mohito
+        depends_on:
+            - php
+            - mysql
     php:
         build:
             context: ./build/php
             dockerfile: Dockerfile
         environment:
-            APP_ENV: env.local
+            APP_ENV: dev
         volumes:
-            - ./app/:/var/www/app/
+            - ./app/:/var/www/app/:delegated
         networks:
             - mohito
+        depends_on:
+            - mysql
     mysql:
-        image: mysql
+        image: mysql:8.0
         command:
             [
                 "--character-set-server=utf8mb4",
@@ -35,9 +40,10 @@ services:
         ports:
             - "3306:3306"
         volumes:
-            - ./mysql:/var/lib/mysql
+            - ./mysql:/var/lib/mysql:delegated
         networks:
             - mohito
 
 networks:
     mohito:
+        external: true
