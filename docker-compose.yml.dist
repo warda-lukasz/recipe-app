@@ -1,0 +1,43 @@
+services:
+    nginx:
+        build:
+            context: ./build/nginx
+            dockerfile: Dockerfile
+        volumes:
+            - ./app/:/var/www/app/
+        ports:
+            - "80:80"
+        networks:
+            - mohito
+    php:
+        build:
+            context: ./build/php
+            dockerfile: Dockerfile
+        environment:
+            APP_ENV: env.local
+        volumes:
+            - ./app/:/var/www/app/
+        networks:
+            - mohito
+    mysql:
+        image: mysql
+        command:
+            [
+                "--character-set-server=utf8mb4",
+                "--collation-server=utf8mb4_unicode_ci",
+                "--default-authentication-plugin=mysql_native_password",
+            ]
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: mohito
+            MYSQL_USER: mohito
+            MYSQL_PASSWORD: mohito
+        ports:
+            - "3306:3306"
+        volumes:
+            - ./mysql:/var/lib/mysql
+        networks:
+            - mohito
+
+networks:
+    mohito:
