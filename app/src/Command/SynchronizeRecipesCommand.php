@@ -31,7 +31,17 @@ class SynchronizeRecipesCommand extends Command
         $io->title('Synchronizing recipes with the database');
 
         try {
-            $this->recipeSynchronizer->synchronize();
+            $io->section('Synchronizing Categories');
+            $this->recipeSynchronizer->synchronize('category');
+            $io->success('Categories have been synchronized successfully.');
+
+            $io->section('Synchronizing Ingredients');
+            $this->recipeSynchronizer->synchronize('ingredient');
+            $io->success('Ingredients have been synchronized successfully.');
+
+            $io->section('Synchronizing Recipes');
+            $this->recipeSynchronizer->synchronize('recipe');
+            $io->success('Recipes have been synchronized successfully.');
         } catch (Throwable $e) {
             $io->error('🤯' . $e->getMessage());
 

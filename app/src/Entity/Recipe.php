@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Dto\DtoInterface;
 use App\Repository\RecipeRepository;
 use App\Trait\ExternalIdEntityTrait;
 use DateTime;
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
-class Recipe
+class Recipe implements BuildableFromDTO
 {
     use ExternalIdEntityTrait;
 
@@ -22,46 +23,36 @@ class Recipe
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $title = null;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'recipes')]
     #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: false)]
     private ?Category $category = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $area = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $instructions = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $mealThumb = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $tags = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $youtube = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $source;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $imageSource = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, length: 255)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, length: 255, nullable: true)]
     private ?DateTime $dateModified = null;
-
-    #[
-        ORM\ManyToMany(
-            targetEntity: Ingredient::class,
-            inversedBy: 'recipe',
-            cascade: ['persist', 'remove']
-        )
-    ]
-    #[ORM\JoinTable(name: 'recipe_ingredient')]
-    private Collection $ingredients;
 
     #[
         ORM\OneToMany(
@@ -72,11 +63,22 @@ class Recipe
     ]
     private Collection $comments;
 
+    #[
+        ORM\OneToMany(
+            targetEntity: Measurement::class,
+            mappedBy: 'recipe',
+            cascade: ['persist', 'remove']
+        )
+    ]
+    private Collection $measurements;
+
     public function __construct()
     {
-        $this->ingredients = new ArrayCollection();
+        $this->measurements = new ArrayCollection();
         $this->comments = new ArrayCollection();
     }
+
+
 
 
     public function getId(): ?int
@@ -149,7 +151,7 @@ class Recipe
         return $this->tags;
     }
 
-    public function setTags(string $tags): self
+    public function setTags(?string $tags): self
     {
         $this->tags = $tags;
 
@@ -161,7 +163,7 @@ class Recipe
         return $this->youtube;
     }
 
-    public function setYoutube(string $youtube): self
+    public function setYoutube(?string $youtube): self
     {
         $this->youtube = $youtube;
 
@@ -173,7 +175,7 @@ class Recipe
         return $this->source;
     }
 
-    public function setSource(string $source): self
+    public function setSource(?string $source): self
     {
         $this->source = $source;
 
@@ -185,7 +187,7 @@ class Recipe
         return $this->imageSource;
     }
 
-    public function setImageSource(string $imageSource): self
+    public function setImageSource(?string $imageSource): self
     {
         $this->imageSource = $imageSource;
 
@@ -204,26 +206,23 @@ class Recipe
         return $this;
     }
 
-    public function getIngredients(): Collection
+    public function getMeasurements(): Collection
     {
-        return $this->ingredients;
+        return $this->measurements;
     }
 
-    public function addIngredient(Ingredient $ingredient): self
+    public function addMeasurement(Measurement $measurement): self
     {
-        if (!$this->ingredients->contains($ingredient)) {
-            $this->ingredients->add($ingredient);
-            $ingredient->addRecipe($this);
+        if (!$this->measurements->contains($measurement)) {
+            $this->measurements->add($measurement);
         }
 
         return $this;
     }
 
-    public function removeIngredient(Ingredient $ingredient): self
+    public function removeMeasurement(Measurement $measurement): self
     {
-        if ($this->ingredients->removeElement($ingredient)) {
-            $ingredient->removeRecipe($this);
-        }
+        $this->measurements->removeElement($measurement);
 
         return $this;
     }
@@ -236,7 +235,7 @@ class Recipe
     public function addComment(Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
-            $this->comments[] = $comment;
+            $this->comments->add($comment);
             $comment->setRecipe($this);
         }
 
@@ -252,5 +251,10 @@ class Recipe
         }
 
         return $this;
+    }
+
+    public static function fromDto(DtoInterface $dto): BuildableFromDTO
+    {
+        return new self();
     }
 }

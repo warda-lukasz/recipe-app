@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Dto\CategoryDTO;
 use App\Dto\DtoInterface;
 use App\Repository\CategoryRepository;
+use App\Trait\ExternalIdEntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,8 +15,10 @@ use Doctrine\DBAL\Types\Types;
 use InvalidArgumentException;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
-class Category implements EntityInterface
+class Category implements BuildableFromDTO
 {
+    use ExternalIdEntityTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
@@ -23,6 +26,12 @@ class Category implements EntityInterface
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $name = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $thumb = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
     #[ORM\OneToMany(targetEntity: Recipe::class, mappedBy: 'category')]
     private ?Collection $recipes = null;
@@ -46,6 +55,30 @@ class Category implements EntityInterface
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getThumb(): ?string
+    {
+        return $this->thumb;
+    }
+
+    public function setThumb(string $thumb): self
+    {
+        $this->thumb = $thumb;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
@@ -82,8 +115,12 @@ class Category implements EntityInterface
             throw new InvalidArgumentException('Invalid DTO type');
         }
 
-        $category = new self();
-        $category->setName($dto->name);
+        $category = (new self())
+            ->setExternalId($dto->externalId)
+            ->setName($dto->name)
+            ->setThumb($dto->thumb)
+            ->setDescription($dto->description)
+        ;
 
         return $category;
     }

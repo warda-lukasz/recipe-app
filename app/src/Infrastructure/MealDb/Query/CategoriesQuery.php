@@ -8,7 +8,7 @@ class CategoriesQuery implements MealDbQueryInterface
 {
     public function getEndpoint(): string
     {
-        return 'list.php?c=list';
+        return 'categories.php';
     }
 
     /**
@@ -18,7 +18,7 @@ class CategoriesQuery implements MealDbQueryInterface
     {
         $categories = [];
 
-        foreach ($responseData['meals'] as $categoryData) {
+        foreach ($responseData['categories'] as $categoryData) {
             $categories[] = CategoryDTO::fromArray($categoryData);
         }
 

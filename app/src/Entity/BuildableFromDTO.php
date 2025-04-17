@@ -6,7 +6,7 @@ namespace App\Entity;
 
 use App\Dto\DtoInterface;
 
-interface EntityInterface
+interface BuildableFromDTO
 {
     public static function fromDto(DtoInterface $dto): self;
 }

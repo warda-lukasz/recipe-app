@@ -25,7 +25,9 @@ class MealDbClient implements MealDbClientInterface
 
     private function getData(ResponseInterface $response): array
     {
+
         if ($response->getStatusCode() !== 200) {
+            dump($response->getStatusCode());
             throw new MealDbApiErrorException('Error fetching data from MealDB API');
         }
 

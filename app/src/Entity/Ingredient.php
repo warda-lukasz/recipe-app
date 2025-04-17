@@ -16,7 +16,7 @@ use InvalidArgumentException;
 
 
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
-class Ingredient implements EntityInterface
+class Ingredient implements BuildableFromDTO
 {
     use ExternalIdEntityTrait;
 
@@ -34,12 +34,18 @@ class Ingredient implements EntityInterface
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $type = null;
 
-    #[ORM\ManyToMany(targetEntity: Recipe::class, mappedBy: 'ingredients')]
-    private ?Collection $recipes;
+    #[
+        ORM\OneToMany(
+            targetEntity: Measurement::class,
+            mappedBy: 'ingredient',
+            cascade: ['persist', 'remove']
+        )
+    ]
+    private ?Collection $measurements;
 
     public function __construct()
     {
-        $this->recipes = new ArrayCollection();
+        $this->measurements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -83,26 +89,24 @@ class Ingredient implements EntityInterface
         return $this;
     }
 
-    public function getRecipes(): ?Collection
+    public function getMeasurements(): ?Collection
     {
-        return $this->recipes;
+        return $this->measurements;
     }
 
-    public function addRecipe(Recipe $recipe): self
+    public function addMeasurement(Measurement $measurement): self
     {
-        if (!$this->recipes->contains($recipe)) {
-            $this->recipes->add($recipe);
-            $recipe->addIngredient($this);
+        if (!$this->measurements->contains($measurement)) {
+            $this->measurements->add($measurement);
         }
+
 
         return $this;
     }
 
-    public function removeRecipe(Recipe $recipe): self
+    public function removeMeasurement(Measurement $measurement): self
     {
-        if ($this->recipes->removeElement($recipe)) {
-            $recipe->removeIngredient($this);
-        }
+        $this->measurements->removeElement($measurement);
 
         return $this;
     }
@@ -110,7 +114,7 @@ class Ingredient implements EntityInterface
     public static function fromDto(DtoInterface $dto): self
     {
         if (!$dto instanceof IngredientDTO) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Expected instance of %s, got %s',
                 IngredientDTO::class,
                 get_class($dto)
