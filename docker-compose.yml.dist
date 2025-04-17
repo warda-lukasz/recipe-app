@@ -4,7 +4,7 @@ services:
             context: ./build/nginx
             dockerfile: Dockerfile
         volumes:
-            - ./app/:/var/www/app/:delegated
+            - ./app/:/var/www/app/
         ports:
             - "80:80"
         networks:
@@ -19,7 +19,7 @@ services:
         environment:
             APP_ENV: dev
         volumes:
-            - ./app/:/var/www/app/:delegated
+            - ./app/:/var/www/app/
         networks:
             - mohito
         depends_on:
@@ -40,7 +40,7 @@ services:
         ports:
             - "3306:3306"
         volumes:
-            - ./mysql:/var/lib/mysql:delegated
+            - ./mysql:/var/lib/mysql
         networks:
             - mohito
 
