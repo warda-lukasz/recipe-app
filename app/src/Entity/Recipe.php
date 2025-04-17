@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
-class Recipe implements EntityInterface
+class Recipe
 {
     use ExternalIdEntityTrait;
 

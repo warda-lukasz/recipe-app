@@ -10,7 +10,7 @@ class CategoryRepository extends DoctrineRepository
 {
     protected static string $entity = Category::class;
 
-    public function getCategoryNames(): array
+    public function findAllCategoryNames(): array
     {
         return $this->createQueryBuilder('e')
             ->select('e.name')

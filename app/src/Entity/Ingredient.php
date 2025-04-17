@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Dto\DtoInterface;
+use App\Dto\IngredientDTO;
 use App\Trait\ExternalIdEntityTrait;
 use App\Repository\IngredientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
+use InvalidArgumentException;
 
 
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
@@ -25,10 +28,10 @@ class Ingredient implements EntityInterface
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $type = null;
 
     #[ORM\ManyToMany(targetEntity: Recipe::class, mappedBy: 'ingredients')]
@@ -49,7 +52,7 @@ class Ingredient implements EntityInterface
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -61,7 +64,7 @@ class Ingredient implements EntityInterface
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 
@@ -73,7 +76,7 @@ class Ingredient implements EntityInterface
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(?string $type): self
     {
         $this->type = $type;
 
@@ -102,5 +105,22 @@ class Ingredient implements EntityInterface
         }
 
         return $this;
+    }
+
+    public static function fromDto(DtoInterface $dto): self
+    {
+        if (!$dto instanceof IngredientDTO) {
+            throw new \InvalidArgumentException(sprintf(
+                'Expected instance of %s, got %s',
+                IngredientDTO::class,
+                get_class($dto)
+            ));
+        }
+
+        return (new self())
+            ->setExternalId($dto->externalId)
+            ->setName($dto->name)
+            ->setDescription($dto->description)
+            ->setType($dto->type);
     }
 }
