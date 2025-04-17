@@ -5,30 +5,16 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Category;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
 
-class CategoryRepository extends ServiceEntityRepository implements RecipeRepositoryInterface, EntityRepositoryInterface
+class CategoryRepository extends DoctrineRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Category::class);
-    }
+    protected static string $entity = Category::class;
 
-    public function findById(int $id): ?Category
+    public function getCategoryNames(): array
     {
-        return null;
+        return $this->createQueryBuilder('e')
+            ->select('e.name')
+            ->getQuery()
+            ->getSingleColumnResult();
     }
-
-    public function findByIds(array $ids): array
-    {
-        return [];
-    }
-
-    public function findByExternalId(string $externalId): ?Category
-    {
-        return null;
-    }
-
-    public function save(object $entity): void {}
 }

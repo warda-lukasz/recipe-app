@@ -7,11 +7,13 @@ namespace App\Entity;
 use App\Repository\RecipeRepository;
 use App\Trait\ExternalIdEntityTrait;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
-class Recipe
+class Recipe implements EntityInterface
 {
     use ExternalIdEntityTrait;
 
@@ -23,8 +25,9 @@ class Recipe
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $category = null;
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'recipes')]
+    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', nullable: false)]
+    private ?Category $category = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $area = null;
@@ -50,6 +53,32 @@ class Recipe
     #[ORM\Column(type: Types::DATE_MUTABLE, length: 255)]
     private ?DateTime $dateModified = null;
 
+    #[
+        ORM\ManyToMany(
+            targetEntity: Ingredient::class,
+            inversedBy: 'recipe',
+            cascade: ['persist', 'remove']
+        )
+    ]
+    #[ORM\JoinTable(name: 'recipe_ingredient')]
+    private Collection $ingredients;
+
+    #[
+        ORM\OneToMany(
+            targetEntity: Comment::class,
+            mappedBy: 'recipe',
+            cascade: ['persist', 'remove']
+        )
+    ]
+    private Collection $comments;
+
+    public function __construct()
+    {
+        $this->ingredients = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -67,12 +96,12 @@ class Recipe
         return $this;
     }
 
-    public function getCategory(): ?string
+    public function getCategory(): ?Category
     {
         return $this->category;
     }
 
-    public function setCategory(string $category): self
+    public function setCategory(?Category $category): self
     {
         $this->category = $category;
 
@@ -171,6 +200,56 @@ class Recipe
     public function setDateModified(DateTime $dateModified): self
     {
         $this->dateModified = $dateModified;
+
+        return $this;
+    }
+
+    public function getIngredients(): Collection
+    {
+        return $this->ingredients;
+    }
+
+    public function addIngredient(Ingredient $ingredient): self
+    {
+        if (!$this->ingredients->contains($ingredient)) {
+            $this->ingredients->add($ingredient);
+            $ingredient->addRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIngredient(Ingredient $ingredient): self
+    {
+        if ($this->ingredients->removeElement($ingredient)) {
+            $ingredient->removeRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            if ($comment->getRecipe() === $this) {
+                $comment->setRecipe(null);
+            }
+        }
 
         return $this;
     }

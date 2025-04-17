@@ -6,13 +6,14 @@ namespace App\Entity;
 
 use App\Trait\ExternalIdEntityTrait;
 use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
 
-class Category
+#[ORM\Entity(repositoryClass: CategoryRepository::class)]
+class Category implements EntityInterface
 {
-    use ExternalIdEntityTrait;
-
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     #[ORM\Column(type: Types::INTEGER)]
@@ -21,11 +22,13 @@ class Category
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $thumb = null;
+    #[ORM\OneToMany(targetEntity: Recipe::class, mappedBy: 'category')]
+    private ?Collection $recipes = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null;
+    public function __construct()
+    {
+        $this->recipes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -40,30 +43,6 @@ class Category
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getThumb(): ?string
-    {
-        return $this->thumb;
-    }
-
-    public function setThumb(string $thumb): self
-    {
-        $this->thumb = $thumb;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
 
         return $this;
     }

@@ -5,33 +5,11 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Recipe;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Recipe>
  */
-class RecipeRepository extends ServiceEntityRepository implements RecipeRepositoryInterface, EntityRepositoryInterface
+class RecipeRepository extends DoctrineRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Recipe::class);
-    }
-
-    public function findById(int $id): ?Recipe
-    {
-        return null;
-    }
-
-    public function findByIds(array $ids): array
-    {
-        return [];
-    }
-
-    public function findByExternalId(string $externalId): ?Recipe
-    {
-        return null;
-    }
-
-    public function save(object $entity): void {}
+    protected static string $entity = Recipe::class;
 }
