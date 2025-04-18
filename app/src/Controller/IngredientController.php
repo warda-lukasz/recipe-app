@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Entity\Ingredient;
 use App\Infrastructure\MealDb\Client\MealDbClientInterface;
-use App\Infrastructure\MealDb\Query\IngredientsQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -37,6 +36,7 @@ class IngredientController extends BaseController
     public function show(Ingredient $ingredient): Response
     {
         $thumbnail = $this->mealDbClient::getIngrendientImageUrl($ingredient->getName());
+
         return $this->render('ingredient/show.html.twig', [
             'ingredient' => $ingredient,
             'thumbnail' => $thumbnail,
