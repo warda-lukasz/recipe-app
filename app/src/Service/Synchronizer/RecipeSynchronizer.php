@@ -54,12 +54,12 @@ class RecipeSynchronizer extends AbstractSynchronizer
     }
 
     /**
-     * HACK: Niestety nie można ciągnąć z api na pełej prędkości,
-     * bo rozbijamy się o rate limit.
-     * W związku z tym co 25 elementów damy serverowi trochę odsapnąć.
-     * 1 sekunda powinna wystarczyć, przy krótszym czasie miałem HTTP 429
+     * HACK: Unfortunately, we cannot pull from the API at full speed,
+     * because we hit the rate limit.
+     * Therefore, every 25 elements we'll give the server a little break.
+     * 1 second should be enough, with shorter times I got HTTP 429
      *
-     * Przy okazji wyczyścimy pamięć entity managera.
+     * We'll also clear the entity manager's memory while we're at it.
      */
     private function sanityCheck(): void
     {

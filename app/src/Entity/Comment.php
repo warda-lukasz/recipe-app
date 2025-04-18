@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Dto\DtoInterface;
 use App\Repository\CommentRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,7 +17,7 @@ class Comment
     #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: false)]
     private ?string $content = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -27,6 +26,9 @@ class Comment
     #[ORM\ManyToOne(targetEntity: Recipe::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(name: 'recipe_id', referencedColumnName: 'id', nullable: false)]
     private Recipe $recipe;
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: false)]
+    private ?string $author = null;
 
     public function getId(): ?int
     {
@@ -65,6 +67,18 @@ class Comment
     public function setRecipe(?Recipe $recipe): self
     {
         $this->recipe = $recipe;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?string
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(string $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

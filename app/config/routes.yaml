@@ -1,3 +1,10 @@
+homepage:
+    path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        route: recipe_list
+        permanent: true
+
 controllers:
     resource:
         path: ../src/Controller/

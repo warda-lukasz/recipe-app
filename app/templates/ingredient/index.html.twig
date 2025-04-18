@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title ?? 'Recipes' }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mt-4 mb-4">Ingredients List:</h1>
+
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-baseline">
+                    <div class="d-flex">
+                        <span class="mx-4"><strong>Id</strong></span>
+                        <span class="mx-4"><strong>Name</strong></span>
+                    </div>
+                    <span class="mx-4"><strong>Action</strong></span>
+                </li>
+                {% for ingrendient in ingredients %}
+                    <li class="list-group-item d-flex justify-content-between align-items-baseline">
+                        <div class="d-flex">
+                            <strong class="mx-4">{{ingrendient.id}}.</strong>
+                            <span class="mx-4">{{ ingrendient.name}}</span>
+                        </div>
+                        <a href="{{ path('ingredient_show', { id: ingrendient.id }) }}">🔍Details</a>
+                    </li> 
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

@@ -9,4 +9,5 @@ use App\Infrastructure\MealDb\Query\MealDbQueryInterface;
 interface MealDbClientInterface
 {
     public function execute(MealDbQueryInterface $query): array;
+    public static function getIngrendientImageUrl(string $ingredientName): string;
 }

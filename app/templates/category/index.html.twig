@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="mt-4 mb-4">Category List:</h1>
+        <div class="row">
+            {% for category in categories %}
+                <div class="card m-3 p-3" style="width: 20%;">
+                    <h5 class="card-title text-center p-2">{{ category.name }}</h5>
+                  <img src="{{ category.thumb }}" class="card-img-top" alt="{{
+                  category.name }}">
+                  <div class="card-body pb-0">
+                    <p class="card-text fw-light">
+                    </p>
+                    <small class="fw-lighter">
+                    </small>
+
+                    <br>
+                    <div class="my-2 text-center"> 
+                        <a href="{{ path('category_show', { id: category.id }) }}" class="btn btn-primary">Details</a>
+                    </div>
+                  </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
