@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\Synchronizer;
 
-use AbstractSynchronizer;
 use App\Dto\IngredientDTO;
 use App\Entity\Ingredient;
 use App\Infrastructure\MealDb\Client\MealDbClientInterface;

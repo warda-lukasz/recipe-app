@@ -3,7 +3,7 @@
 {% block title %}Categories{% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
+    <div class="container">
         <h1 class="mt-4 mb-4">Category List:</h1>
         <div class="row">
             {% for category in categories %}
@@ -12,14 +12,8 @@
                   <img src="{{ category.thumb }}" class="card-img-top" alt="{{
                   category.name }}">
                   <div class="card-body pb-0">
-                    <p class="card-text fw-light">
-                    </p>
-                    <small class="fw-lighter">
-                    </small>
-
-                    <br>
                     <div class="my-2 text-center"> 
-                        <a href="{{ path('category_show', { id: category.id }) }}" class="btn btn-primary">Details</a>
+                        <a href="{{ path('category_show', { id: category.id }) }}" class="btn btn-dark w-100">🔍 Details</a>
                     </div>
                   </div>
                 </div>

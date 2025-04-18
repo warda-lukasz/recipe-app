@@ -1,0 +1,24 @@
+<div class="card">
+    <div class="card-header bg-dark text-white">
+        <h2 class="mb-0">Ingredients</h2>
+    </div>
+    <div class="card-body">
+        <ul class="list-group">
+            {% if recipe.measurements is defined and recipe.measurements|length > 0 %}
+                {% for measurement in recipe.measurements %}
+                    <li class="list-group-item">
+                        <strong>
+                            <a href="{{ path('ingredient_show', { id: measurement.ingredient.id }) }}">
+                                {{ measurement.ingredient.name }}:
+                            </a>
+                        </strong>
+                        {{ measurement.measure }}
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li class="list-group-item">Brak danych o składnikach</li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+

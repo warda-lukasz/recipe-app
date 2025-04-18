@@ -1,0 +1,25 @@
+{% if recipe.comments is not empty %}
+    <div class="card">
+        <div class="card-header bg-dark text-white d-flex
+        justify-content-between align-items-baseline">
+            <h2>Comments</h2>
+            <h4>{{ recipe.comments|length }} total</h4>
+        </div>
+
+        <div class="card-body">
+            {% for comment in recipe.comments %}
+                <div class="alert alert-dark" role="alert">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="alert-heading">
+                            {{comment.author}}
+                        </h5>
+                        <small class="fw-light">{{comment.createdAt|date("Y-m-d H:i:s")}}</small>
+                    </div>
+                    <p>
+                        {{ comment.content }}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

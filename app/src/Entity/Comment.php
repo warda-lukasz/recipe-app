@@ -23,7 +23,7 @@ class Comment
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(targetEntity: Recipe::class, inversedBy: 'comments')]
+    #[ORM\ManyToOne(targetEntity: Recipe::class, inversedBy: 'comments', cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'recipe_id', referencedColumnName: 'id', nullable: false)]
     private Recipe $recipe;
 

@@ -20,7 +20,7 @@ class MealDbClient implements MealDbClientInterface
     {
         $thumbnailName = str_replace(' ', '_', strtolower($ingredientName));
 
-        return self::BASE_URL . "/images/ingredients/{$thumbnailName}.png";
+        return self::BASE_URL . "/images/ingredients/{$thumbnailName}-medium.png";
     }
 
     public function execute(MealDbQueryInterface $query): array

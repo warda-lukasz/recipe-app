@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\Synchronizer;
 
-use AbstractSynchronizer;
 use App\Repository\CategoryRepository;
 use App\Infrastructure\MealDb\Client\MealDbClientInterface;
 use App\Infrastructure\MealDb\Query\CategoriesQuery;

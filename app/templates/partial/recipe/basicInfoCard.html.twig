@@ -1,0 +1,10 @@
+<div class="card mb-4 text-center">
+    <div class="card-header bg-dark text-white">
+        <h2 class="mb-0">{{ recipe.title }}</h2>
+    </div>
+    <img src="{{ asset(recipe.mealThumb) }}" alt="{{ recipe.title }}"
+    class="img w-50 mx-auto rounded my-3">
+    <div class="card-body">
+        {% include 'partial/recipe/basicInfo.html.twig' with { recipe: recipe } %}
+    </div>
+</div>
