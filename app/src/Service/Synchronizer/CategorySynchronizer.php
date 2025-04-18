@@ -23,7 +23,7 @@ class CategorySynchronizer extends AbstractSynchronizer
         $this->existingNames = $this->categoryRepository->findAllCategoryNames();
     }
 
-    public function synchronize(): void
+   public function synchronize(): void
     {
         $newCategories = $this->filterNewCategories();
 

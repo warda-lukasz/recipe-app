@@ -34,9 +34,9 @@ services:
             ]
         environment:
             MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: mohito
-            MYSQL_USER: mohito
-            MYSQL_PASSWORD: mohito
+            MYSQL_DATABASE: recipe
+            MYSQL_USER: recipe
+            MYSQL_PASSWORD: recipe
         ports:
             - "3306:3306"
         volumes:

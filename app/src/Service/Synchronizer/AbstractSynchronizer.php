@@ -8,6 +8,6 @@ abstract class AbstractSynchronizer implements SynchronizerInterface
 
     public function supports(string $type): bool
     {
-        return self::$type === $type;
+        return $type === static::$type;
     }
 }
