@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Synchronizer;
 
+use AbstractSynchronizer;
 use App\Dto\MealByCategoryDTO;
 use App\Dto\RecipeDTO;
 use App\Factory\RecipeFactory;
@@ -13,9 +14,9 @@ use App\Infrastructure\MealDb\Query\RecipeDetailsQuery;
 use App\Repository\CategoryRepository;
 use App\Repository\RecipeRepository;
 
-class RecipeSynchronizer implements SynchronizerInterface
+class RecipeSynchronizer extends AbstractSynchronizer
 {
-    private const string TYPE = 'recipe';
+    public static string $type = 'recipes';
 
     public function __construct(
         private readonly RecipeRepository $recipeRepository,
@@ -53,11 +54,11 @@ class RecipeSynchronizer implements SynchronizerInterface
     }
 
     /**
-     * Niestety nie można ciągnąć z api na pełej prędkości,
+     * HACK: Niestety nie można ciągnąć z api na pełej prędkości,
      * bo rozbijamy się o rate limit.
-     *
      * W związku z tym co 25 elementów damy serverowi trochę odsapnąć.
      * 1 sekunda powinna wystarczyć, przy krótszym czasie miałem HTTP 429
+     *
      * Przy okazji wyczyścimy pamięć entity managera.
      */
     private function sanityCheck(): void
@@ -108,10 +109,5 @@ class RecipeSynchronizer implements SynchronizerInterface
         );
 
         return $res[0];
-    }
-
-    public function supports(string $type): bool
-    {
-        return self::TYPE === $type;
     }
 }

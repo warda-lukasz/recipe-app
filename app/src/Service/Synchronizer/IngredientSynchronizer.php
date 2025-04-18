@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace App\Service\Synchronizer;
 
+use AbstractSynchronizer;
 use App\Dto\IngredientDTO;
 use App\Entity\Ingredient;
 use App\Infrastructure\MealDb\Client\MealDbClientInterface;
 use App\Infrastructure\MealDb\Query\IngredientsQuery;
 use App\Repository\IngredientRepository;
 
-class IngredientSynchronizer implements SynchronizerInterface
+class IngredientSynchronizer extends AbstractSynchronizer
 {
-    private const string TYPE = 'ingredient';
+    public static string $type = 'ingredients';
 
     public function __construct(
         private readonly IngredientRepository $ingredientRepository,
@@ -53,10 +54,5 @@ class IngredientSynchronizer implements SynchronizerInterface
         return array_filter($dtos, function (IngredientDTO $dto) {
             return !in_array($dto->externalId, $this->externalIds);
         });
-    }
-
-    public function supports(string $type): bool
-    {
-        return self::TYPE === $type;
     }
 }

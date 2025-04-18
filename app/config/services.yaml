@@ -11,8 +11,3 @@ services:
             - "../src/DependencyInjection/"
             - "../src/Entity/"
             - "../src/Kernel.php"
-
-    App\Service\MealDbSynchronizer:
-        class: App\Service\MealDbSynchronizer
-        arguments:
-            $synchronizers: !tagged_iterator app.synchronizer

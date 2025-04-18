@@ -4,23 +4,24 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+
 class MealDbSynchronizer
 {
-    private iterable $synchronizers;
-
     /**
      * @param SynchronizerInterface[] $synchronizers
      */
-    public function __construct(iterable $synchronizers)
-    {
-        $this->synchronizers = $synchronizers;
-    }
+    public function __construct(
+        #[TaggedIterator('app.synchronizer')] private readonly iterable $synchronizers,
+    ) {}
 
     public function synchronize(string $type = null): void
     {
         if (!$type) {
             $this->synchronizeAll();
         } else {
+            // NOTE: Remember to add the type to
+            // SynchronizeRecipesCommand::SUPPORTED_TYPES
             $this->synchronizeByType($type);
         }
     }
