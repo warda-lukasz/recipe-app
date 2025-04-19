@@ -40,6 +40,14 @@ class RecipeController extends BaseController
         ]);
     }
 
+    #[Route('/recipe/comment/all/{id}', name: 'recipe_all_comments')]
+    public function showAllRecipeComments(Recipe $recipe): Response
+    {
+        return $this->render('recipe/allComments.html.twig', [
+            'recipe' => $recipe,
+        ]);
+    }
+
     #[Route('/recipe/comment/{id}', name: 'recipe_comment')]
     public function commentRecipe(Recipe $recipe, Request $req): Response
     {
@@ -67,4 +75,5 @@ class RecipeController extends BaseController
             'form' => $form->createView(),
         ]);
     }
+
 }

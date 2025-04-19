@@ -40,10 +40,10 @@ class GenerateCommentsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $faker = Factory::create('pl_PL');
+        $faker = Factory::create('en_US');
 
         $recipeIds = $this->entityManager->createQuery('SELECT r.id FROM App\Entity\Recipe r')->getResult();
-        $io->title('Generowanie komentarzy do przepisów');
+        $io->title('Generating Comments');
         $io->progressStart(count($recipeIds));
 
         foreach ($recipeIds as $recipeData) {
@@ -71,7 +71,7 @@ class GenerateCommentsCommand extends Command
 
 
         $io->progressFinish();
-        $io->success('Wygenerowano komentarze dla wszystkich przepisów!');
+        $io->success('Comments generated successfully for all recipes!');
 
         return Command::SUCCESS;
     }

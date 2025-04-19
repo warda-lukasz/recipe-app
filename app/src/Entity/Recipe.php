@@ -10,6 +10,7 @@ use App\Trait\ExternalIdEntityTrait;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
 
@@ -58,9 +59,11 @@ class Recipe implements BuildableFromDTO
         ORM\OneToMany(
             targetEntity: Comment::class,
             mappedBy: 'recipe',
-            cascade: ['persist', 'remove']
+            cascade: ['persist', 'remove'],
+            fetch: 'EXTRA_LAZY',
         )
     ]
+    #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $comments;
 
     #[
@@ -77,9 +80,6 @@ class Recipe implements BuildableFromDTO
         $this->measurements = new ArrayCollection();
         $this->comments = new ArrayCollection();
     }
-
-
-
 
     public function getId(): ?int
     {
@@ -230,6 +230,15 @@ class Recipe implements BuildableFromDTO
     public function getComments(): Collection
     {
         return $this->comments;
+    }
+
+    public function getRecentComments(int $limit = 20): Collection
+    {
+        $criteria = (new Criteria())
+            ->setMaxResults($limit)
+            ->orderBy(['createdAt' => 'DESC']);
+
+        return $this->comments->matching($criteria);
     }
 
     public function addComment(Comment $comment): self

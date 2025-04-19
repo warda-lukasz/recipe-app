@@ -1,22 +1,27 @@
-{% if recipe.comments is not empty %}
+{% set limit = 20 %}
+{% if recipe.getRecentComments is not empty %}
     <div class="card">
         <div class="card-header bg-dark text-white d-flex
         justify-content-between align-items-baseline">
-            <h2>Comments</h2>
-            <h4>{{ recipe.comments|length }} total</h4>
+            <h2>
+                💬 {{ limit < recipe.comments|length ? limit : recipe.comments|length }} Newest Comments...
+            </h2>
+            <a href="{{ path('recipe_all_comments', { id: recipe.id }) }}" class="btn btn-light">
+                🔍 Show all {{ recipe.comments|length }} comments
+            </a>
         </div>
 
         <div class="card-body">
-            {% for comment in recipe.comments %}
+            {% for comment in recipe.getRecentComments(limit) %}
                 <div class="alert alert-dark" role="alert">
                     <div class="d-flex justify-content-between">
                         <h5 class="alert-heading">
-                            {{comment.author}}
+                            👤 {{comment.author}}
                         </h5>
-                        <small class="fw-light">{{comment.createdAt|date("Y-m-d H:i:s")}}</small>
+                        <small class="fw-light">📅 {{comment.createdAt|date("Y-m-d H:i:s")}}</small>
                     </div>
                     <p>
-                        {{ comment.content }}
+                        ✍️ {{ comment.content }}
                     </p>
                 </div>
             {% endfor %}
